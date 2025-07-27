@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { MapPin, Phone, Mail, Clock, Facebook, Twitter, Instagram, Linkedin, ArrowUp, Shield, Award, Star, Zap, Users, TrendingUp, Sparkles, ExternalLink } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Facebook, Twitter, Instagram, Linkedin, ArrowUp, Shield, Award, Star, Zap, Users, TrendingUp,  ExternalLink } from 'lucide-react';
 
 // Floating Animation Hook
 function useFloatingAnimation() {
@@ -27,55 +27,6 @@ function useFloatingAnimation() {
   return ref;
 }
 
-// Counter Animation Hook
-function useCountUp(end: number, start: number = 0, duration: number = 2000) {
-  const [count, setCount] = useState(start);
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !isVisible) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => observer.disconnect();
-  }, [isVisible]);
-
-  useEffect(() => {
-    if (!isVisible) return;
-
-    let startTime: number;
-    let animationId: number;
-
-    const animate = (currentTime: number) => {
-      if (!startTime) startTime = currentTime;
-      const progress = Math.min((currentTime - startTime) / duration, 1);
-      
-      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-      const current = start + (end - start) * easeOutQuart;
-      
-      setCount(Math.floor(current));
-
-      if (progress < 1) {
-        animationId = requestAnimationFrame(animate);
-      }
-    };
-
-    animationId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationId);
-  }, [isVisible, end, start, duration]);
-
-  return { count, ref };
-}
 
 export default function Footer() {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -122,13 +73,13 @@ export default function Footer() {
   const contactInfo = [
     {
       icon: Phone,
-      primary: '(555) 123-4567',
+      primary: '(+44) 759-720-4777',
       secondary: '24/7 Emergency',
       color: 'from-emerald-500 to-teal-600'
     },
     {
       icon: Mail,
-      primary: 'info@elitepainting.com',
+      primary: 'vbogdan88@yahoo.com',
       secondary: 'Response within 2 hours',
       color: 'from-blue-500 to-indigo-600'
     },
@@ -173,36 +124,7 @@ export default function Footer() {
     }
   ];
 
-  const stats = [
-    { 
-      icon: Users, 
-      number: 500, 
-      suffix: '+', 
-      label: 'Projects Completed',
-      color: 'from-emerald-400 to-teal-500'
-    },
-    { 
-      icon: TrendingUp, 
-      number: 98, 
-      suffix: '%', 
-      label: 'Client Satisfaction',
-      color: 'from-blue-400 to-indigo-500'
-    },
-    { 
-      icon: Award, 
-      number: 15, 
-      suffix: '+', 
-      label: 'Years Experience',
-      color: 'from-violet-400 to-purple-500'
-    },
-    { 
-      icon: Star, 
-      number: 5, 
-      suffix: '.0', 
-      label: 'Average Rating',
-      color: 'from-amber-400 to-orange-500'
-    }
-  ];
+
 
   return (
     <footer className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
@@ -215,66 +137,7 @@ export default function Footer() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Premium Stats Section */}
-        <div className="py-16 border-b border-slate-700/50">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-50/10 to-indigo-50/10 border border-blue-500/20 text-blue-300 px-6 py-3 rounded-full text-sm font-medium mb-6 backdrop-blur-sm">
-              <Sparkles className="h-4 w-4" />
-              <span>Our Achievements</span>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Excellence in
-              <span className="block bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 bg-clip-text text-transparent">
-                Every Detail
-              </span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {stats.map((stat, index) => {
-              const IconComponent = stat.icon;
-              const { count, ref } = useCountUp(stat.number);
-              
-              return (
-                <div
-                  key={index}
-                  ref={ref}
-                  className="group relative text-center"
-                >
-                  <div className="relative bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 lg:p-8 hover:bg-slate-800/70 hover:border-slate-600/50 transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
-                    
-                    {/* Gradient Glow on Hover */}
-                    <div className={`absolute inset-0 bg-gradient-to-r ${stat.color} opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-500`}></div>
-                    
-                    {/* Icon */}
-                    <div className="relative mb-4">
-                      <div className={`inline-flex p-3 rounded-xl bg-gradient-to-r ${stat.color} shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-500`}>
-                        <IconComponent className="h-6 w-6 text-white" />
-                      </div>
-                    </div>
-                    
-                    {/* Animated Number */}
-                    <div className="mb-2">
-                      <span className={`text-2xl lg:text-3xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
-                        {stat.suffix === '%' || stat.suffix === '+' ? count : count.toFixed(1)}
-                        {stat.suffix}
-                      </span>
-                    </div>
-                    
-                    {/* Label */}
-                    <div className="text-sm font-medium text-slate-300">
-                      {stat.label}
-                    </div>
-                    
-                    {/* Bottom Border Effect */}
-                    <div className={`absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r ${stat.color} group-hover:w-12 group-hover:-translate-x-1/2 transition-all duration-500`}></div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
+        
         {/* Main Footer Content */}
         <div className="py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
@@ -283,7 +146,7 @@ export default function Footer() {
             <div className="lg:col-span-1">
               <div className="mb-6">
                 <h3 className="text-3xl font-bold mb-2">
-                  Elite <span className="bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">Painting</span>
+                  Colour <span className="bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">Rays</span>
                 </h3>
                 <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full"></div>
               </div>
@@ -413,7 +276,7 @@ export default function Footer() {
         <div className="border-t border-slate-700/50 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="text-slate-400 text-sm text-center md:text-left">
-              <p>&copy; 2025 Elite Painting Services. All rights reserved.</p>
+              <p>&copy; 2025 Colour Rays Services. All rights reserved.</p>
               <p className="mt-1">License #123456789 • Fully Insured • Bonded</p>
             </div>
             
@@ -443,14 +306,7 @@ export default function Footer() {
         <ArrowUp className="h-5 w-5" />
       </button>
 
-      {/* CSS Animations */}
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          33% { transform: translateY(-15px) rotate(1deg); }
-          66% { transform: translateY(8px) rotate(-1deg); }
-        }
-      `}</style>
+  
     </footer>
   );
 }
