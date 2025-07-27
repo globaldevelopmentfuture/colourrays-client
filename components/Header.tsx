@@ -71,8 +71,8 @@ export default function Header() {
   ];
 
   const contactInfo = {
-    phone: "(555) 123-4567",
-    email: "info@colourrays.com",
+    phone: "(+44) 759-720-4777",
+    email: "vbogdan88@yahoo.com",
   };
 
   const services = [
