@@ -277,20 +277,11 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="text-slate-400 text-sm text-center md:text-left">
               <p>&copy; 2025 Colour Rays Services. All rights reserved.</p>
-              <p className="mt-1">License #123456789 • Fully Insured • Bonded</p>
             </div>
             
             <div className="flex flex-wrap justify-center gap-6 text-sm">
-              {['Privacy Policy', 'Terms of Service', 'Warranty', 'Sitemap'].map((link, index) => (
-                <a 
-                  key={index}
-                  href="#" 
-                  className="group flex items-center text-slate-400 hover:text-blue-400 transition-colors duration-300"
-                >
-                  <span>{link}</span>
-                  <ExternalLink className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
-                </a>
-              ))}
+              <p className="mt-1">License • Fully Insured • Bonded</p>
+             
             </div>
           </div>
         </div>

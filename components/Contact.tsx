@@ -17,7 +17,6 @@ interface ContactInfo {
   icon: any;
   title: string;
   primary: string;
-  secondary?: string;
   accent: string;
   color: string;
   bgColor: string;
@@ -75,7 +74,6 @@ export default function Contact() {
       icon: Phone,
       title: "Phone",
       primary: "(+44) 759-720-4777",
-      secondary: "(+44) 759-720-4777",
       accent: "24/7 Emergency Service",
       color: "from-emerald-500 to-teal-600",
       bgColor: "from-emerald-50 to-teal-50",
@@ -85,7 +83,6 @@ export default function Contact() {
       icon: Mail,
       title: "Email",
       primary: "vbogdan88@yahoo.com",
-      secondary: "vbogdan88@yahoo.com",
       accent: "Response within 2 hours",
       color: "from-blue-500 to-indigo-600",
       bgColor: "from-blue-50 to-indigo-50",
@@ -95,7 +92,6 @@ export default function Contact() {
       icon: MapPin,
       title: "Service Area",
       primary: "Metropolitan Area",
-      secondary: "50-mile radius",
       accent: "Free estimates included",
       color: "from-violet-500 to-purple-600",
       bgColor: "from-violet-50 to-purple-50",
@@ -105,7 +101,6 @@ export default function Contact() {
       icon: Clock,
       title: "Business Hours",
       primary: "Mon-Fri: 7AM - 7PM",
-      secondary: "Sat: 8AM - 5PM",
       accent: "Sunday by appointment",
       color: "from-amber-500 to-orange-600",
       bgColor: "from-amber-50 to-orange-50",
@@ -345,11 +340,6 @@ export default function Contact() {
                         <p className="text-gray-700 font-medium mb-1 text-sm sm:text-base group-hover:text-gray-800 transition-colors duration-300">
                           {info.primary}
                         </p>
-                        {info.secondary && (
-                          <p className="text-gray-600 mb-1 sm:mb-2 text-sm group-hover:text-gray-700 transition-colors duration-300">
-                            {info.secondary}
-                          </p>
-                        )}
                         <p
                           className={`text-xs sm:text-sm font-medium bg-gradient-to-r ${info.color} bg-clip-text text-transparent`}
                         >
