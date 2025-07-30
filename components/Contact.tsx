@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import emailjs from "@emailjs/browser";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import {
   MapPin,
@@ -13,6 +14,7 @@ import {
   Shield,
 } from "lucide-react";
 
+/* ────────────────────────── tipuri auxiliare ────────────────────────── */
 interface ContactInfo {
   icon: any;
   title: string;
@@ -31,7 +33,9 @@ interface FormData {
   message: string;
 }
 
+/* ─────────────────────────── componenta ─────────────────────────────── */
 export default function Contact() {
+  /* ----------- state ------------ */
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -39,41 +43,52 @@ export default function Contact() {
     service: "",
     message: "",
   });
-
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
+
+  /* ---------- handlers ---------- */
+  const handleInputChange = (field: keyof FormData, value: string) =>
+    setFormData((prev) => ({ ...prev, [field]: value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    const templateParams = {
+      from_name: formData.name,
+      from_email: formData.email,
+      phone: formData.phone || "‑",
+      service: formData.service || "General enquiry",
+      message: formData.message || "(no message provided)",
+    };
 
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 4000);
+    try {
+      await emailjs.send(
+        "service_osy4ifa", // Service ID
+        "template_ysz2bkj", // Template ID
+        templateParams,
+        "0icNqgiTThb2YrqN2" // Public Key / User ID
+      );
 
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      service: "",
-      message: "",
-    });
+      setIsSubmitted(true);
+      setTimeout(() => setIsSubmitted(false), 4000);
+
+      // reset formular
+      setFormData({ name: "", email: "", phone: "", service: "", message: "" });
+    } catch (err) {
+      console.error("Email sending failed:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
+  /* --------- date statice -------- */
   const contactInfo: ContactInfo[] = [
     {
       icon: Phone,
       title: "Phone",
-      primary: "(+44) 759-720-4777",
+      primary: "(+44) 759‑720‑4777",
       accent: "24/7 Emergency Service",
       color: "from-emerald-500 to-teal-600",
       bgColor: "from-emerald-50 to-teal-50",
@@ -83,7 +98,7 @@ export default function Contact() {
       icon: Mail,
       title: "Email",
       primary: "vbogdan88@yahoo.com",
-      accent: "Response within 2 hours",
+      accent: "Response within 2 hours",
       color: "from-blue-500 to-indigo-600",
       bgColor: "from-blue-50 to-indigo-50",
       glowColor: "shadow-blue-500/20",
@@ -100,7 +115,7 @@ export default function Contact() {
     {
       icon: Clock,
       title: "Business Hours",
-      primary: "Mon-Fri: 7AM - 7PM",
+      primary: "Mon‑Fri  7 AM – 7 PM",
       accent: "Sunday by appointment",
       color: "from-amber-500 to-orange-600",
       bgColor: "from-amber-50 to-orange-50",
@@ -114,64 +129,47 @@ export default function Contact() {
     "Commercial Painting",
     "Cabinet Refinishing",
     "Specialty Finishes",
-    "Maintenance & Touch-ups",
+    "Maintenance & Touch‑ups",
     "Free Consultation",
   ];
 
-
-
-
-  // Animation variants
+  /* -------- framer‑motion variants -------- */
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.2, delayChildren: 0.1 },
     },
   };
 
-  const itemVariants : Variants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: {
-        duration: 0.6,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      },
+      transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] },
     },
   };
 
-  const cardHoverVariants : Variants = {
+  const cardHoverVariants: Variants = {
     hover: {
       y: -4,
       scale: 1.01,
-      transition: {
-        duration: 0.2,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      },
+      transition: { duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] },
     },
   };
 
+  /* ----------------------------- UI ----------------------------- */
   return (
     <section
       id="contact"
       className="relative py-12 sm:py-16 md:py-20 lg:py-24 xl:py-32 bg-gradient-to-br from-slate-50 via-white to-blue-50/30 overflow-hidden"
     >
-      {/* Enhanced Background Elements */}
+      {/* ===== background pattern & shapes ===== */}
       <div className="absolute inset-0">
-        {/* Grid Pattern */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgb(148_163_184)_1px,transparent_0)] bg-[length:32px_32px] opacity-[0.015]"></div>
-        
-        {/* Floating Shapes */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgb(148_163_184)_1px,transparent_0)] bg-[length:32px_32px] opacity-[0.015]" />
         <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
+          animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
           transition={{
             duration: 8,
             repeat: Infinity,
@@ -180,10 +178,7 @@ export default function Contact() {
           className="absolute top-20 left-10 w-32 h-32 bg-blue-200/20 rounded-full blur-3xl"
         />
         <motion.div
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.1, 0.15, 0.1],
-          }}
+          animate={{ scale: [1.2, 1, 1.2], opacity: [0.1, 0.15, 0.1] }}
           transition={{
             duration: 10,
             repeat: Infinity,
@@ -195,7 +190,7 @@ export default function Contact() {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Enhanced Header */}
+        {/* ================= HEADER ================= */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -203,7 +198,7 @@ export default function Contact() {
           transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="text-center mb-12 sm:mb-16 lg:mb-20"
         >
-          {/* Badge */}
+          {/* badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -220,7 +215,7 @@ export default function Contact() {
             />
           </motion.div>
 
-          {/* Main Title - Fully Responsive */}
+          {/* titlu */}
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -240,7 +235,7 @@ export default function Contact() {
             </motion.span>
           </motion.h2>
 
-          {/* Description - Responsive */}
+          {/* descriere */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -253,7 +248,7 @@ export default function Contact() {
             quality and precision.
           </motion.p>
 
-          {/* Stats Row - New Addition */}
+          {/* stats scurte */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -263,16 +258,16 @@ export default function Contact() {
           >
             {[
               { icon: Phone, number: "24/7", label: "Available" },
-              { icon: Clock, number: "2hr", label: "Response" },
+              { icon: Clock, number: "2 hr", label: "Response" },
               { icon: CheckCircle, number: "Free", label: "Estimates" },
               { icon: Shield, number: "100%", label: "Insured" },
-            ].map((stat, index) => (
+            ].map((stat, i) => (
               <motion.div
-                key={index}
+                key={i}
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
+                transition={{ duration: 0.5, delay: 0.7 + i * 0.1 }}
                 whileHover={{ scale: 1.05 }}
                 className="text-center group"
               >
@@ -294,8 +289,9 @@ export default function Contact() {
           </motion.div>
         </motion.div>
 
+        {/* ================= CONTINUT PRINCIPAL ================= */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
-          {/* Enhanced Contact Information */}
+          {/* ----- CARDURI INFO ----- */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -303,41 +299,36 @@ export default function Contact() {
             viewport={{ once: true }}
             className="lg:col-span-2 space-y-4 sm:space-y-6"
           >
-            {contactInfo.map((info, index) => {
-              const IconComponent = info.icon;
+            {contactInfo.map((info, idx) => {
+              const Icon = info.icon;
               return (
                 <motion.div
-                  key={index}
+                  key={idx}
                   variants={itemVariants}
                   whileHover="hover"
-                  className="group"
                 >
                   <motion.div
                     variants={cardHoverVariants}
                     className="relative bg-white/70 backdrop-blur-sm border border-gray-100/50 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:bg-white/90 hover:border-gray-200/50 transition-all duration-500 hover:shadow-xl overflow-hidden"
                   >
-                    {/* Enhanced Gradient Glow Effect */}
+                    {/* gradient glow */}
                     <div
                       className={`absolute inset-0 bg-gradient-to-r ${info.color} opacity-0 group-hover:opacity-8 rounded-xl sm:rounded-2xl transition-opacity duration-500`}
-                    ></div>
-
-                    {/* Shimmer Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 rounded-xl sm:rounded-2xl"></div>
+                    />
+                    {/* shimmer */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 rounded-xl sm:rounded-2xl" />
 
                     <div className="relative flex items-start gap-3 sm:gap-4">
-                      <motion.div
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        transition={{ duration: 0.3 }}
+                      <div
                         className={`flex-shrink-0 p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-r ${info.color} shadow-lg ${info.glowColor} group-hover:shadow-2xl transition-all duration-500`}
                       >
-                        <IconComponent className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
-                      </motion.div>
-
+                        <Icon className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
+                      </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-gray-900 mb-1 sm:mb-2 text-base sm:text-lg group-hover:text-gray-800 transition-colors duration-300">
+                        <h3 className="font-semibold text-gray-900 mb-1 sm:mb-2 text-base sm:text-lg">
                           {info.title}
                         </h3>
-                        <p className="text-gray-700 font-medium mb-1 text-sm sm:text-base group-hover:text-gray-800 transition-colors duration-300">
+                        <p className="text-gray-700 font-medium mb-1 text-sm sm:text-base">
                           {info.primary}
                         </p>
                         <p
@@ -347,12 +338,11 @@ export default function Contact() {
                         </p>
                       </div>
                     </div>
-
-                    {/* Enhanced Bottom Border Effect */}
+                    {/* linie inferioară */}
                     <motion.div
                       initial={{ width: 0 }}
                       whileHover={{ width: 80 }}
-                      className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 h-0.5 sm:h-1 bg-gradient-to-r ${info.color} transition-all duration-500 rounded-t-full`}
+                      className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 sm:h-1 bg-gradient-to-r ${info.color} transition-all duration-500 rounded-t-full`}
                     />
                   </motion.div>
                 </motion.div>
@@ -360,7 +350,7 @@ export default function Contact() {
             })}
           </motion.div>
 
-          {/* Enhanced Contact Form */}
+          {/* ----- FORMULAR ----- */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -369,13 +359,10 @@ export default function Contact() {
             className="lg:col-span-3"
           >
             <div className="relative bg-white/80 backdrop-blur-xl border border-gray-100/50 shadow-[0_20px_60px_rgba(0,0,0,0.08)] rounded-2xl sm:rounded-3xl overflow-hidden">
-              {/* Enhanced Form Header with Gradient */}
+              {/* antet formular */}
               <div className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 p-6 sm:p-8 text-white overflow-hidden">
-                <div className="absolute inset-0 bg-black/10"></div>
-
-                {/* Animated Background Pattern */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.1),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(255,255,255,0.05),transparent_50%)]"></div>
-
+                <div className="absolute inset-0 bg-black/10" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.1),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(255,255,255,0.05),transparent_50%)]" />
                 <div className="relative">
                   <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">
                     Get Your Free Estimate
@@ -387,9 +374,14 @@ export default function Contact() {
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-4 sm:space-y-6">
-                {/* Name and Email Row */}
+              {/* === FORM === */}
+              <form
+                onSubmit={handleSubmit}
+                className="p-6 sm:p-8 space-y-4 sm:space-y-6"
+              >
+                {/* Nume + Email */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                  {/* nume */}
                   <div className="group">
                     <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
                       Full Name *
@@ -417,6 +409,7 @@ export default function Contact() {
                     </div>
                   </div>
 
+                  {/* email */}
                   <div className="group">
                     <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
                       Email Address *
@@ -441,7 +434,7 @@ export default function Contact() {
                         }}
                         className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-violet-500/10 pointer-events-none"
                       />
-                      {/* Email validation indicator */}
+                      {/* indicator validitate */}
                       <AnimatePresence>
                         {formData.email && (
                           <motion.div
@@ -461,7 +454,7 @@ export default function Contact() {
                                 transition={{ duration: 1, repeat: Infinity }}
                                 className="w-5 h-5 sm:w-6 sm:h-6 bg-amber-500 rounded-full flex items-center justify-center"
                               >
-                                <div className="w-2 h-2 bg-white rounded-full"></div>
+                                <div className="w-2 h-2 bg-white rounded-full" />
                               </motion.div>
                             )}
                           </motion.div>
@@ -471,8 +464,9 @@ export default function Contact() {
                   </div>
                 </div>
 
-                {/* Phone and Service Row */}
+                {/* Telefon + Serviciu */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                  {/* telefon */}
                   <div className="group">
                     <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
                       Phone Number
@@ -486,7 +480,7 @@ export default function Contact() {
                         }
                         onFocus={() => setFocusedField("phone")}
                         onBlur={() => setFocusedField(null)}
-                        className="w-full px-4 sm:px-5 py-3 sm:py-4 pl-10 sm:pl-12 bg-gradient-to-r from-gray-50/80 to-gray-50/60 border-2 border-gray-200/60 rounded-xl sm:rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:shadow-lg focus:shadow-blue-500/10 transition-all duration-500 placeholder-gray-400 text-gray-800 font-medium hover:border-gray-300 hover:shadow-md text-sm sm:text-base"
+                        className="w-full pl-10 sm:pl-12 px-4 sm:px-5 py-3 sm:py-4 bg-gradient-to-r from-gray-50/80 to-gray-50/60 border-2 border-gray-200/60 rounded-xl sm:rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:shadow-lg focus:shadow-blue-500/10 transition-all duration-500 placeholder-gray-400 text-gray-800 font-medium hover:border-gray-300 hover:shadow-md text-sm sm:text-base"
                         placeholder="Phone number (optional)"
                       />
                       <motion.div
@@ -496,7 +490,6 @@ export default function Contact() {
                         }}
                         className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-violet-500/10 pointer-events-none"
                       />
-                      {/* Phone icon */}
                       <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                         <Phone
                           className={`h-4 w-4 transition-colors duration-300 ${
@@ -509,6 +502,7 @@ export default function Contact() {
                     </div>
                   </div>
 
+                  {/* serviciu */}
                   <div className="group">
                     <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
                       Service Type
@@ -526,7 +520,6 @@ export default function Contact() {
                         <option value="">Select a service</option>
                         {services.map((service) => (
                           <option
-                            className="p-2"
                             key={service}
                             value={service.toLowerCase().replace(/\s+/g, "-")}
                           >
@@ -541,15 +534,18 @@ export default function Contact() {
                         }}
                         className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-violet-500/10 pointer-events-none"
                       />
-
-                      {/* Enhanced Custom Arrow */}
+                      {/* săgeată custom */}
                       <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                         <motion.div
                           animate={{
                             backgroundColor:
-                              focusedField === "service" ? "#3b82f6" : "#e5e7eb",
+                              focusedField === "service"
+                                ? "#3b82f6"
+                                : "#e5e7eb",
                             color:
-                              focusedField === "service" ? "#ffffff" : "#9ca3af",
+                              focusedField === "service"
+                                ? "#ffffff"
+                                : "#9ca3af",
                           }}
                           className="p-1 rounded-full transition-all duration-300"
                         >
@@ -572,7 +568,7 @@ export default function Contact() {
                   </div>
                 </div>
 
-                {/* Message Field */}
+                {/* Detalii proiect */}
                 <div className="group">
                   <label className="block text-sm font-semibold text-gray-700 mb-2 sm:mb-3">
                     Project Details
@@ -587,6 +583,7 @@ export default function Contact() {
                       onBlur={() => setFocusedField(null)}
                       className="w-full px-4 sm:px-5 py-3 sm:py-4 bg-gradient-to-r from-gray-50/80 to-gray-50/60 border-2 border-gray-200/60 rounded-xl sm:rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 focus:shadow-lg focus:shadow-blue-500/10 transition-all duration-500 placeholder-gray-400 resize-none text-gray-800 font-medium hover:border-gray-300 hover:shadow-md text-sm sm:text-base"
                       rows={4}
+                      maxLength={500}
                       placeholder="Describe your project details..."
                     />
                     <motion.div
@@ -596,15 +593,14 @@ export default function Contact() {
                       }}
                       className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-violet-500/10 pointer-events-none"
                     />
-
-                    {/* Character counter */}
+                    {/* counter */}
                     <div className="absolute bottom-2 sm:bottom-3 right-3 sm:right-4 text-xs text-gray-400">
                       {formData.message.length}/500
                     </div>
                   </div>
                 </div>
 
-                {/* Enhanced Terms Checkbox */}
+                {/* termeni */}
                 <div className="flex items-start gap-3">
                   <div className="relative mt-1 group">
                     <input
@@ -618,13 +614,13 @@ export default function Contact() {
                     htmlFor="terms"
                     className="text-xs sm:text-sm text-gray-600 leading-relaxed"
                   >
-                    I agree to receive communications from COLOUR RAYS
-                    regarding my project. Your information will be kept
-                    confidential and used only to provide estimates and updates.
+                    I agree to receive communications from COLOUR RAYS regarding
+                    my project. Your information will be kept confidential and
+                    used only to provide estimates and updates.
                   </label>
                 </div>
 
-                {/* Enhanced Submit Button */}
+                {/* BUTON submit */}
                 <motion.button
                   type="submit"
                   disabled={isSubmitting || isSubmitted}
@@ -632,81 +628,63 @@ export default function Contact() {
                   whileTap={{ scale: 0.98 }}
                   className="group relative w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-700 hover:via-indigo-700 hover:to-violet-700 text-white py-4 sm:py-5 px-6 sm:px-8 rounded-xl sm:rounded-2xl font-semibold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:shadow-blue-500/25 transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
                 >
-                  {/* Enhanced Button Background Animation */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1200"></div>
+                  {/* efect background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-[1200ms]" />
 
-                  {/* Pulse Effect */}
-                  <motion.div
-                    animate={{ opacity: [0, 0.2, 0] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="absolute inset-0 bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 rounded-xl sm:rounded-2xl"
-                  />
-
-                  {/* Border glow effect */}
-                  <div className="absolute inset-0 rounded-xl sm:rounded-2xl border-2 border-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                  <div className="relative flex items-center justify-center gap-2 sm:gap-3">
-                    <AnimatePresence mode="wait">
-                      {isSubmitting ? (
+                  <AnimatePresence mode="wait">
+                    {isSubmitting ? (
+                      /* spinner */
+                      <motion.div
+                        key="submitting"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="flex items-center gap-3"
+                      >
                         <motion.div
-                          key="submitting"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          className="flex items-center gap-3"
-                        >
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                            className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white/30 border-t-white rounded-full"
-                          />
-                          <span>Sending Message...</span>
-                        </motion.div>
-                      ) : isSubmitted ? (
-                        <motion.div
-                          key="submitted"
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          className="flex items-center gap-3"
-                        >
-                          <motion.div
-                            animate={{ scale: [1, 1.2, 1] }}
-                            transition={{ duration: 0.5 }}
-                          >
-                            <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6" />
-                          </motion.div>
-                          <span>Message Sent Successfully!</span>
-                        </motion.div>
-                      ) : (
-                        <motion.div
-                          key="default"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          className="flex items-center gap-3"
-                        >
-                          <motion.div
-                            whileHover={{ x: 4, rotate: 12 }}
-                            transition={{ duration: 0.3 }}
-                          >
-                            <Send className="h-5 w-5 sm:h-6 sm:w-6" />
-                          </motion.div>
-                          <span className="hidden sm:inline">Send Message & Get Free Quote</span>
-                          <span className="sm:hidden">Send Message</span>
-                          <motion.div
-                            whileHover={{ x: 4 }}
-                            transition={{ duration: 0.3 }}
-                          >
-                            <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
-                          </motion.div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
+                          animate={{ rotate: 360 }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            ease: "linear",
+                          }}
+                          className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white/30 border-t-white rounded-full"
+                        />
+                        <span>Sending Message...</span>
+                      </motion.div>
+                    ) : isSubmitted ? (
+                      /* succes */
+                      <motion.div
+                        key="submitted"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="flex items-center gap-3"
+                      >
+                        <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6" />
+                        <span>Message Sent Successfully!</span>
+                      </motion.div>
+                    ) : (
+                      /* default */
+                      <motion.div
+                        key="default"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="flex items-center gap-3"
+                      >
+                        <Send className="h-5 w-5 sm:h-6 sm:w-6" />
+                        <span className="hidden sm:inline">
+                          Send Message &amp; Get Free Quote
+                        </span>
+                        <span className="sm:hidden">Send Message</span>
+                        <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.button>
 
-                {/* Enhanced Footer Note */}
+                {/* notă footer */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -722,13 +700,17 @@ export default function Contact() {
                           className="w-2 h-2 bg-green-500 rounded-full"
                         />
                         <span className="text-green-700">
-                          Expect a response within 2-4 business hours
+                          Expect a response within 2‑4 business hours
                         </span>
                       </div>
                       <div className="flex items-center justify-center gap-2">
                         <motion.div
                           animate={{ scale: [1, 1.2, 1] }}
-                          transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            delay: 1,
+                          }}
                           className="w-2 h-2 bg-blue-500 rounded-full"
                         />
                         <span className="text-blue-700">
@@ -742,8 +724,6 @@ export default function Contact() {
             </div>
           </motion.div>
         </div>
-
-
       </div>
     </section>
   );
