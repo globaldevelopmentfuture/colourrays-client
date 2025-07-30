@@ -46,10 +46,10 @@ export default function Footer() {
   };
 
   const socialLinks = [
-    { icon: Facebook, href: '#', label: 'Facebook', color: 'from-blue-500 to-blue-600' },
-    { icon: Instagram, href: '#', label: 'Instagram', color: 'from-pink-500 to-purple-600' },
-    { icon: Twitter, href: '#', label: 'Twitter', color: 'from-blue-400 to-cyan-500' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn', color: 'from-blue-600 to-indigo-700' }
+    { icon: Facebook, href: 'https://www.facebook.com/valeriu.bogdan.73/', label: 'Facebook', color: 'from-blue-500 to-blue-600' },
+    { icon: Instagram, href: 'https://www.instagram.com/bvaleriu777?igsh=cjNxMzd5bmM5ZWFt', label: 'Instagram', color: 'from-pink-500 to-purple-600' },
+    { icon: Twitter, href: 'https://twitter.com/yourprofile', label: 'Twitter', color: 'from-blue-400 to-cyan-500' },
+    { icon: Linkedin, href: 'https://www.linkedin.com/in/yourprofile/', label: 'LinkedIn', color: 'from-blue-600 to-indigo-700' }
   ];
 
   const services = [
